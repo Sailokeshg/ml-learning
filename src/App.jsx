@@ -1686,15 +1686,15 @@ function ConceptMapView({ setActiveModuleId, setActiveView }) {
             x="2"
             y="6"
             width="96"
-            height="42"
+            height="38"
             rx="3"
           />
           <rect
             className="map-layer internals"
             x="2"
-            y="51"
+            y="49"
             width="66"
-            height="44"
+            height="46"
             rx="3"
           />
           <rect
@@ -1702,16 +1702,16 @@ function ConceptMapView({ setActiveModuleId, setActiveView }) {
             x="70"
             y="45"
             width="28"
-            height="50"
+            height="51"
             rx="3"
           />
           <text className="map-layer-label" x="5" y="12">
             ML foundation
           </text>
-          <text className="map-layer-label" x="5" y="57">
+          <text className="map-layer-label" x="5" y="55">
             LLM internals
           </text>
-          <text className="map-layer-label" x="73" y="51">
+          <text className="map-layer-label" x="72" y="48.2">
             App workflow
           </text>
           {conceptLinks.map(([from, to, label], index) => {
@@ -1728,22 +1728,20 @@ function ConceptMapView({ setActiveModuleId, setActiveView }) {
             const perpX = -dy / len;
             const perpY = dx / len;
 
-            // Count connections to target node to detect clustering
-            const connectionsToB = conceptLinks.filter(
-              ([f, t]) => t === to,
-            ).length;
-            const connectionsFromB = conceptLinks.filter(
-              ([f, t]) => f === to,
-            ).length;
-            const totalConnectionsToB = connectionsToB + connectionsFromB;
+            // Define custom offsets for specific crowded links
+            let offsetDistance = index % 2 === 0 ? -3 : 3;
+            const linkId = `${from}-${to}`;
+            if (linkId === "tokens-attention") offsetDistance = -4;
+            if (linkId === "tokens-embeddings") offsetDistance = 4;
+            if (linkId === "prompt-llm") offsetDistance = -2.5;
+            if (linkId === "attention-llm") offsetDistance = -4;
+            if (linkId === "llm-rag") offsetDistance = -3.5;
+            if (linkId === "llm-agents") offsetDistance = -4.5;
+            if (linkId === "llm-fine-tuning") offsetDistance = 4.5;
+            if (linkId === "rag-evals") offsetDistance = -5;
+            if (linkId === "agents-evals") offsetDistance = -4.5;
+            if (linkId === "fine-tuning-evals") offsetDistance = 4;
 
-            // Increase offset for heavily connected nodes and workflow area nodes
-            let offsetDistance = 4;
-            if (totalConnectionsToB >= 3) offsetDistance = 5.5;
-            if (b.x > 70) offsetDistance += 2; // Extra offset for right-side (workflow) nodes
-
-            // Alternate direction based on index
-            offsetDistance = index % 2 === 0 ? -offsetDistance : offsetDistance;
             const labelX = midX + perpX * offsetDistance;
             const labelY = midY + perpY * offsetDistance;
 
