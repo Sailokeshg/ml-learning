@@ -1,0 +1,24 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#0E1116"/>
+  <path d="M0 470C130 410 247 414 366 454C520 506 641 544 802 482C930 433 1047 322 1200 357V630H0V470Z" fill="#1B6B69"/>
+  <path d="M0 398C145 345 259 341 386 384C531 433 663 438 801 376C926 320 1051 256 1200 289V630H0V398Z" fill="#E7B75F" fill-opacity="0.9"/>
+  <path d="M0 520C171 462 283 460 410 497C566 543 697 553 845 500C974 453 1090 415 1200 438V630H0V520Z" fill="#EB6A4A" fill-opacity="0.88"/>
+  <circle cx="929" cy="160" r="76" fill="#9BE7D8" fill-opacity="0.16"/>
+  <circle cx="1026" cy="229" r="37" fill="#F5D77F" fill-opacity="0.24"/>
+  <g opacity="0.95">
+    <rect x="94" y="116" width="94" height="50" rx="18" fill="#FFFFFF" fill-opacity="0.11"/>
+    <rect x="203" y="116" width="116" height="50" rx="18" fill="#FFFFFF" fill-opacity="0.17"/>
+    <rect x="334" y="116" width="72" height="50" rx="18" fill="#FFFFFF" fill-opacity="0.11"/>
+    <rect x="421" y="116" width="118" height="50" rx="18" fill="#FFFFFF" fill-opacity="0.17"/>
+    <path d="M141 166C205 234 276 251 349 216C426 179 506 202 574 279C652 367 740 373 818 298C880 238 940 222 1006 256" stroke="#9BE7D8" stroke-width="10" stroke-linecap="round"/>
+    <circle cx="141" cy="166" r="12" fill="#9BE7D8"/>
+    <circle cx="349" cy="216" r="12" fill="#9BE7D8"/>
+    <circle cx="574" cy="279" r="12" fill="#9BE7D8"/>
+    <circle cx="818" cy="298" r="12" fill="#9BE7D8"/>
+    <circle cx="1006" cy="256" r="12" fill="#9BE7D8"/>
+  </g>
+  <text x="94" y="274" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="800" letter-spacing="0">Interactive ML + LLM</text>
+  <text x="94" y="352" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="800" letter-spacing="0">Learning Journey</text>
+  <text x="99" y="422" fill="#DDE7E4" font-family="Inter, Arial, sans-serif" font-size="29" font-weight="500" letter-spacing="0">Tokens, embeddings, attention, prompting, RAG, agents, and evals.</text>
+  <text x="98" y="528" fill="#10151B" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800" letter-spacing="0">Built by Sai Lokesh with Codex</text>
+</svg>
