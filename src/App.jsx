@@ -8,7 +8,7 @@ import {
   Compass,
   Database,
   GitBranch,
-  Map,
+  Map as MapIcon,
   Play,
   RefreshCw,
   Search,
@@ -17,7 +17,13 @@ import {
   Target,
   Thermometer,
 } from "lucide-react";
-import { conceptLinks, conceptNodes, glossary, modules, useCases } from "./lessonData.js";
+import {
+  conceptLinks,
+  conceptNodes,
+  glossary,
+  modules,
+  useCases,
+} from "./lessonData.js";
 
 const STORAGE_KEYS = {
   activeView: "ml-llm-active-view",
@@ -30,7 +36,7 @@ const STORAGE_KEYS = {
 const navItems = [
   { id: "journey", label: "Journey", icon: Compass },
   { id: "playgrounds", label: "Playgrounds", icon: SlidersHorizontal },
-  { id: "map", label: "Concept Map", icon: Map },
+  { id: "map", label: "Concept Map", icon: MapIcon },
   { id: "use-cases", label: "Use Cases", icon: Target },
   { id: "glossary", label: "Glossary", icon: BookOpen },
 ];
@@ -64,7 +70,12 @@ const workflowCopy = {
     title: "Evals",
     icon: BadgeCheck,
     line: "Best when you need proof that changes improve quality.",
-    steps: ["Create cases", "Score outputs", "Compare versions", "Track regressions"],
+    steps: [
+      "Create cases",
+      "Score outputs",
+      "Compare versions",
+      "Track regressions",
+    ],
   },
 };
 
@@ -171,7 +182,8 @@ const visualGuides = {
   workflow: {
     title: "Model system",
     flow: ["Model", "Tools/context", "Evals"],
-    watch: "Real products wrap the model with retrieval, tools, and measurement.",
+    watch:
+      "Real products wrap the model with retrieval, tools, and measurement.",
     try: "Compare RAG, agents, fine-tuning, and eval workflows.",
     points: [
       "Prompting is the lightest steering layer.",
@@ -270,7 +282,12 @@ function approximateTokens(text) {
           : hasLeadingSpace
             ? "space"
             : "word";
-      const prefix = hasLeadingSpace && index === 0 ? "space + " : index > 0 ? "subword: " : "";
+      const prefix =
+        hasLeadingSpace && index === 0
+          ? "space + "
+          : index > 0
+            ? "subword: "
+            : "";
       tokens.push({
         value: piece,
         display: `${prefix}${piece}`,
@@ -286,13 +303,15 @@ function approximateTokens(text) {
 
 function splitWordIntoPieces(word) {
   const lower = word.toLowerCase();
-  if (subwordExamples[lower]) return matchWordCase(word, subwordExamples[lower]);
+  if (subwordExamples[lower])
+    return matchWordCase(word, subwordExamples[lower]);
   if (commonWholeWords.has(lower) || word.length <= 5) return [word];
 
   const camelPieces = word.match(/[A-Z]?[a-z]+|[A-Z]+(?![a-z])/g);
   if (camelPieces && camelPieces.length > 1) return camelPieces;
 
-  if (word.length > 12) return [word.slice(0, 6), word.slice(6, 10), word.slice(10)];
+  if (word.length > 12)
+    return [word.slice(0, 6), word.slice(6, 10), word.slice(10)];
   if (word.length > 8) return [word.slice(0, 5), word.slice(5)];
   return [word];
 }
@@ -305,7 +324,8 @@ function splitNonWordToken(chunk) {
 }
 
 function matchWordCase(original, pieces) {
-  if (original === original.toUpperCase()) return pieces.map((piece) => piece.toUpperCase());
+  if (original === original.toUpperCase())
+    return pieces.map((piece) => piece.toUpperCase());
   if (original[0] === original[0].toUpperCase()) {
     return pieces.map((piece, index) =>
       index === 0 ? `${piece[0].toUpperCase()}${piece.slice(1)}` : piece,
@@ -315,7 +335,10 @@ function matchWordCase(original, pieces) {
 }
 
 function App() {
-  const [storedActiveView, setActiveView] = useStoredState(STORAGE_KEYS.activeView, "journey");
+  const [storedActiveView, setActiveView] = useStoredState(
+    STORAGE_KEYS.activeView,
+    "journey",
+  );
   const [activeModuleId, setActiveModuleId] = useStoredState(
     STORAGE_KEYS.activeModule,
     modules[0].id,
@@ -327,8 +350,11 @@ function App() {
   const activeView = navItems.some((item) => item.id === storedActiveView)
     ? storedActiveView
     : "journey";
-  const activeModule = modules.find((module) => module.id === activeModuleId) || modules[0];
-  const completedCount = modules.filter((module) => completed[module.id]).length;
+  const activeModule =
+    modules.find((module) => module.id === activeModuleId) || modules[0];
+  const completedCount = modules.filter(
+    (module) => completed[module.id],
+  ).length;
   const progress = Math.round((completedCount / modules.length) * 100);
 
   const setModuleCompletion = (moduleId, shouldComplete) => {
@@ -388,10 +414,16 @@ function App() {
           />
         )}
         {activeView === "playgrounds" && (
-          <PlaygroundsView setActiveModuleId={setActiveModuleId} setActiveView={setActiveView} />
+          <PlaygroundsView
+            setActiveModuleId={setActiveModuleId}
+            setActiveView={setActiveView}
+          />
         )}
         {activeView === "map" && (
-          <ConceptMapView setActiveModuleId={setActiveModuleId} setActiveView={setActiveView} />
+          <ConceptMapView
+            setActiveModuleId={setActiveModuleId}
+            setActiveView={setActiveView}
+          />
         )}
         {activeView === "use-cases" && <UseCasesView />}
         {activeView === "glossary" && <GlossaryView />}
@@ -404,7 +436,11 @@ function App() {
 function Header({ activeView, setActiveView, completedCount, progress }) {
   return (
     <header className="topbar">
-      <button className="brand" type="button" onClick={() => setActiveView("journey")}>
+      <button
+        className="brand"
+        type="button"
+        onClick={() => setActiveView("journey")}
+      >
         <span className="brand-mark">
           <Brain size={22} aria-hidden="true" />
         </span>
@@ -467,16 +503,24 @@ function JourneyView({
             {modules.map((module) => (
               <button
                 key={module.id}
-                className={activeModuleId === module.id ? "module-link active" : "module-link"}
+                className={
+                  activeModuleId === module.id
+                    ? "module-link active"
+                    : "module-link"
+                }
                 type="button"
                 onClick={() => setActiveModuleId(module.id)}
               >
-                <span className={`module-number ${module.theme}`}>{module.number}</span>
+                <span className={`module-number ${module.theme}`}>
+                  {module.number}
+                </span>
                 <span>
                   <strong>{module.shortTitle}</strong>
                   <small>{completed[module.id] ? "Complete" : "Ready"}</small>
                 </span>
-                {completed[module.id] && <CheckCircle2 size={18} aria-hidden="true" />}
+                {completed[module.id] && (
+                  <CheckCircle2 size={18} aria-hidden="true" />
+                )}
               </button>
             ))}
           </div>
@@ -497,10 +541,13 @@ function JourneyView({
 }
 
 function HeroLab({ progress, setActiveView }) {
-  const [prompt, setPrompt] = useState("Explain embeddings like I am new to AI.");
+  const [prompt, setPrompt] = useState(
+    "Explain embeddings like I am new to AI.",
+  );
   const [temperature, setTemperature] = useState(35);
   const tokens = approximateTokens(prompt);
-  const tone = temperature < 35 ? "focused" : temperature < 70 ? "balanced" : "creative";
+  const tone =
+    temperature < 35 ? "focused" : temperature < 70 ? "balanced" : "creative";
   const answer =
     tone === "focused"
       ? "Embeddings are number maps for meaning. Similar ideas get nearby positions."
@@ -515,30 +562,47 @@ function HeroLab({ progress, setActiveView }) {
           <Sparkles size={16} aria-hidden="true" />
           Beginner-first interactive ML guide
         </span>
-        <h1>Learn how machines learn, how LLMs think, and why prompts, tokens, embeddings, and RAG matter.</h1>
+        <h1>
+          Learn how machines learn, how LLMs think, and why prompts, tokens,
+          embeddings, and RAG matter.
+        </h1>
         <p>
-          Move through ten short modules with visual demos, quick checks, and playgrounds built to make
-          AI concepts easier to explain.
+          Move through ten short modules with visual demos, quick checks, and
+          playgrounds built to make AI concepts easier to explain.
         </p>
         <div className="hero-actions">
-          <button className="primary-button" type="button" onClick={() => setActiveView("playgrounds")}>
+          <button
+            className="primary-button"
+            type="button"
+            onClick={() => setActiveView("playgrounds")}
+          >
             <Play size={18} aria-hidden="true" />
             Open Playgrounds
           </button>
         </div>
       </div>
-      <div className="live-card interactive-card" aria-label="Interactive prompt preview">
+      <div
+        className="live-card interactive-card"
+        aria-label="Interactive prompt preview"
+      >
         <div className="card-topline">
           <span>Live prompt lab</span>
           <strong>{progress}% complete</strong>
         </div>
         <label className="text-control">
           <span>Prompt</span>
-          <textarea value={prompt} onChange={(event) => setPrompt(event.target.value)} rows={3} />
+          <textarea
+            value={prompt}
+            onChange={(event) => setPrompt(event.target.value)}
+            rows={3}
+          />
         </label>
         <div className="token-row" aria-label="Prompt tokens">
           {tokens.slice(0, 12).map((token, index) => (
-            <span key={`${token.display}-${index}`} className={`token-chip ${token.type}`}>
+            <span
+              key={`${token.display}-${index}`}
+              className={`token-chip ${token.type}`}
+            >
               {token.display}
             </span>
           ))}
@@ -588,7 +652,11 @@ function LessonModule({
         <VisualStory module={module} />
         <DemoPanel module={module} />
       </div>
-      <QuizCard module={module} quizAnswer={quizAnswer} answerQuiz={answerQuiz} />
+      <QuizCard
+        module={module}
+        quizAnswer={quizAnswer}
+        answerQuiz={answerQuiz}
+      />
       <div className="takeaway-band">
         <div>
           <span>Takeaway</span>
@@ -604,13 +672,21 @@ function LessonModule({
         </button>
       </div>
       <div className="deep-mode">
-        <button className="text-button" type="button" onClick={() => setDeepMode(!deepMode)}>
+        <button
+          className="text-button"
+          type="button"
+          onClick={() => setDeepMode(!deepMode)}
+        >
           {deepMode ? "Hide deeper note" : "Go deeper"}
         </button>
         {deepMode && <p>{module.deeper}</p>}
       </div>
       {nextModule && (
-        <button className="next-module" type="button" onClick={() => setActiveModuleId(nextModule.id)}>
+        <button
+          className="next-module"
+          type="button"
+          onClick={() => setActiveModuleId(nextModule.id)}
+        >
           Continue to module {nextModule.number}: {nextModule.shortTitle}
         </button>
       )}
@@ -622,7 +698,10 @@ function VisualStory({ module }) {
   const guide = visualGuides[module.demo] || visualGuides.ml;
 
   return (
-    <section className={`visual-story snapshot-${module.theme}`} aria-label={`${module.title} concept snapshot`}>
+    <section
+      className={`visual-story snapshot-${module.theme}`}
+      aria-label={`${module.title} concept snapshot`}
+    >
       <div className="snapshot-header">
         <span className={`module-number ${module.theme}`}>{module.number}</span>
         <div>
@@ -685,7 +764,9 @@ function DemoPanel({ module }) {
       case "attention":
         return <AttentionDemo focus={Number(value)} />;
       case "prompt":
-        return <PromptDemo temperature={Number(value)} setTemperature={setValue} />;
+        return (
+          <PromptDemo temperature={Number(value)} setTemperature={setValue} />
+        );
       case "workflow":
         return <WorkflowDemo selected={String(value)} setSelected={setValue} />;
       default:
@@ -693,7 +774,12 @@ function DemoPanel({ module }) {
     }
   };
 
-  const hasCustomControls = ["tokens", "embedding", "prompt", "workflow"].includes(module.demo);
+  const hasCustomControls = [
+    "tokens",
+    "embedding",
+    "prompt",
+    "workflow",
+  ].includes(module.demo);
 
   return (
     <section className="demo-panel interactive-card">
@@ -733,7 +819,9 @@ function MLPlayground({ noise }) {
     return Array.from({ length: 28 }, (_, index) => {
       const x = 18 + ((index * 29) % 250);
       const base = 118 - x * 0.32;
-      const wobble = Math.sin(index * 1.9) * noise * 0.34 + Math.cos(index * 0.8) * noise * 0.15;
+      const wobble =
+        Math.sin(index * 1.9) * noise * 0.34 +
+        Math.cos(index * 0.8) * noise * 0.15;
       const y = clamp(base + wobble + 16, 20, 132);
       return { x, y, label: y < base + 22 ? "good" : "high" };
     });
@@ -742,11 +830,22 @@ function MLPlayground({ noise }) {
 
   return (
     <div className="demo-stack">
-      <svg className="chart" viewBox="0 0 300 160" role="img" aria-label="Simple learning playground">
+      <svg
+        className="chart"
+        viewBox="0 0 300 160"
+        role="img"
+        aria-label="Simple learning playground"
+      >
         <rect x="12" y="12" width="276" height="132" rx="8" />
         <path className="trend-line" d="M26 126 L276 42" />
         {points.map((point, index) => (
-          <circle key={index} cx={point.x} cy={point.y} r="5.5" className={point.label} />
+          <circle
+            key={index}
+            cx={point.x}
+            cy={point.y}
+            r="5.5"
+            className={point.label}
+          />
         ))}
       </svg>
       <div className="metric-row">
@@ -763,10 +862,27 @@ function TrainingDemo({ rounds }) {
 
   return (
     <div className="pipeline-demo">
-      <PipelineStep icon={Database} title="Examples" text={`${rounds * 120} labeled rows`} />
-      <PipelineStep icon={RefreshCw} title="Training" text={`${rounds} update rounds`} active />
-      <PipelineStep icon={Brain} title="Model" text={`${trainQuality}% pattern fit`} />
-      <PipelineStep icon={Activity} title="Inference" text={`${inferenceSpeed}ms response`} />
+      <PipelineStep
+        icon={Database}
+        title="Examples"
+        text={`${rounds * 120} labeled rows`}
+      />
+      <PipelineStep
+        icon={RefreshCw}
+        title="Training"
+        text={`${rounds} update rounds`}
+        active
+      />
+      <PipelineStep
+        icon={Brain}
+        title="Model"
+        text={`${trainQuality}% pattern fit`}
+      />
+      <PipelineStep
+        icon={Activity}
+        title="Inference"
+        text={`${inferenceSpeed}ms response`}
+      />
     </div>
   );
 }
@@ -786,7 +902,12 @@ function LossDemo({ learningRate }) {
 
   return (
     <div className="demo-stack">
-      <svg className="chart" viewBox="0 0 300 160" role="img" aria-label="Loss curve">
+      <svg
+        className="chart"
+        viewBox="0 0 300 160"
+        role="img"
+        aria-label="Loss curve"
+      >
         <rect x="12" y="12" width="276" height="132" rx="8" />
         <path className="grid-line" d="M26 116 H274 M26 78 H274 M26 40 H274" />
         <path className="loss-line" d={path} />
@@ -796,7 +917,10 @@ function LossDemo({ learningRate }) {
       </svg>
       <div className="metric-row">
         <Metric label="Final loss" value={finalLoss} />
-        <Metric label="Update style" value={learningRate > 78 ? "jumpy" : "steady"} />
+        <Metric
+          label="Update style"
+          value={learningRate > 78 ? "jumpy" : "steady"}
+        />
       </div>
     </div>
   );
@@ -804,27 +928,53 @@ function LossDemo({ learningRate }) {
 
 function NetworkDemo({ width }) {
   const inputNodes = [36, 80, 124];
-  const hiddenNodes = Array.from({ length: width }, (_, index) => 22 + index * (116 / Math.max(width - 1, 1)));
+  const hiddenNodes = Array.from(
+    { length: width },
+    (_, index) => 22 + index * (116 / Math.max(width - 1, 1)),
+  );
   const outputNodes = [54, 104];
 
   return (
     <div className="demo-stack">
-      <svg className="network-svg" viewBox="0 0 300 160" role="img" aria-label="Neural network layers">
+      <svg
+        className="network-svg"
+        viewBox="0 0 300 160"
+        role="img"
+        aria-label="Neural network layers"
+      >
         {inputNodes.flatMap((y1, inputIndex) =>
           hiddenNodes.map((y2, hiddenIndex) => (
-            <line key={`i-${inputIndex}-${hiddenIndex}`} x1="52" y1={y1} x2="150" y2={y2} />
+            <line
+              key={`i-${inputIndex}-${hiddenIndex}`}
+              x1="52"
+              y1={y1}
+              x2="150"
+              y2={y2}
+            />
           )),
         )}
         {hiddenNodes.flatMap((y1, hiddenIndex) =>
           outputNodes.map((y2, outputIndex) => (
-            <line key={`o-${hiddenIndex}-${outputIndex}`} x1="150" y1={y1} x2="248" y2={y2} />
+            <line
+              key={`o-${hiddenIndex}-${outputIndex}`}
+              x1="150"
+              y1={y1}
+              x2="248"
+              y2={y2}
+            />
           )),
         )}
         {inputNodes.map((y, index) => (
           <circle key={`input-${index}`} cx="52" cy={y} r="12" />
         ))}
         {hiddenNodes.map((y, index) => (
-          <circle key={`hidden-${index}`} className="hidden-node" cx="150" cy={y} r="10" />
+          <circle
+            key={`hidden-${index}`}
+            className="hidden-node"
+            cx="150"
+            cy={y}
+            r="10"
+          />
         ))}
         {outputNodes.map((y, index) => (
           <circle key={`output-${index}`} cx="248" cy={y} r="12" />
@@ -839,7 +989,15 @@ function NetworkDemo({ width }) {
 }
 
 function LLMDemo({ clues }) {
-  const context = ["The", "student", "opened", "the", "notebook", "to", "learn"];
+  const context = [
+    "The",
+    "student",
+    "opened",
+    "the",
+    "notebook",
+    "to",
+    "learn",
+  ];
   const visible = context.slice(0, 2 + clues);
   const candidates = [
     { word: "AI", score: 30 + clues * 10 },
@@ -873,25 +1031,35 @@ function LLMDemo({ clues }) {
 
 function TokenizerDemo({ text, setText }) {
   const tokens = approximateTokens(text);
-  const subwordCount = tokens.filter((token) => token.type === "subword").length;
+  const subwordCount = tokens.filter(
+    (token) => token.type === "subword",
+  ).length;
   const estimatedCost = Math.max(1, Math.ceil(tokens.length / 4));
 
   return (
     <div className="demo-stack">
       <label className="text-control">
         <span>Type text</span>
-        <textarea value={text} rows={3} onChange={(event) => setText(event.target.value)} />
+        <textarea
+          value={text}
+          rows={3}
+          onChange={(event) => setText(event.target.value)}
+        />
       </label>
       <div className="token-row large">
         {tokens.map((token, index) => (
-          <span className={`token-chip ${token.type}`} key={`${token.display}-${index}`}>
+          <span
+            className={`token-chip ${token.type}`}
+            key={`${token.display}-${index}`}
+          >
             {token.display}
           </span>
         ))}
       </div>
       <p className="demo-note">
-        Approximation: real LLM tokenizers use learned vocabularies, so tokens can be full words,
-        subwords, punctuation, numbers, or chunks that include spaces.
+        Approximation: real LLM tokenizers use learned vocabularies, so tokens
+        can be full words, subwords, punctuation, numbers, or chunks that
+        include spaces.
       </p>
       <div className="metric-row">
         <Metric label="Approx tokens" value={tokens.length} />
@@ -1041,16 +1209,27 @@ function EmbeddingDemo({ query, setQuery }) {
     <div className="embedding-demo">
       <label className="text-control">
         <span>Search by meaning</span>
-        <input value={query} onChange={(event) => setQuery(event.target.value)} />
+        <input
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+        />
       </label>
-      <div className="sample-query-row" aria-label="Example semantic search queries">
+      <div
+        className="sample-query-row"
+        aria-label="Example semantic search queries"
+      >
         {sampleQueries.map((sample) => (
           <button key={sample} type="button" onClick={() => setQuery(sample)}>
             {sample}
           </button>
         ))}
       </div>
-      <svg className="embedding-map" viewBox="0 0 300 180" role="img" aria-label="Embedding map">
+      <svg
+        className="embedding-map"
+        viewBox="0 0 300 180"
+        role="img"
+        aria-label="Embedding map"
+      >
         <rect x="12" y="12" width="276" height="156" rx="8" />
         {topMatches.slice(0, 2).map((point) => (
           <line
@@ -1064,13 +1243,23 @@ function EmbeddingDemo({ query, setQuery }) {
         ))}
         {embeddingDocuments.map((point) => (
           <g key={point.label}>
-            <circle cx={point.x * 2.65 + 10} cy={point.y * 1.45 + 6} r="7" className={point.type} />
+            <circle
+              cx={point.x * 2.65 + 10}
+              cy={point.y * 1.45 + 6}
+              r="7"
+              className={point.type}
+            />
             <text x={point.x * 2.65 + 18} y={point.y * 1.45 + 10}>
               {point.label.split(" ").slice(0, 2).join(" ")}
             </text>
           </g>
         ))}
-        <circle className="query-point" cx={queryPoint.x * 2.65 + 10} cy={queryPoint.y * 1.45 + 6} r="10" />
+        <circle
+          className="query-point"
+          cx={queryPoint.x * 2.65 + 10}
+          cy={queryPoint.y * 1.45 + 6}
+          r="10"
+        />
       </svg>
       <div className="similarity-list">
         {topMatches.map((item) => (
@@ -1091,7 +1280,8 @@ function vectorizeText(text) {
   const vector = {};
   const words = text.toLowerCase().match(/[a-z]+/g) || [];
   words.forEach((word) => {
-    const weights = semanticWeights[word] || semanticWeights[word.replace(/s$/, "")];
+    const weights =
+      semanticWeights[word] || semanticWeights[word.replace(/s$/, "")];
     if (!weights) return;
     Object.entries(weights).forEach(([dimension, amount]) => {
       vector[dimension] = (vector[dimension] || 0) + amount;
@@ -1115,7 +1305,11 @@ function cosineSimilarity(a, b) {
   });
 
   if (!aMagnitude || !bMagnitude) return 0.05;
-  return clamp(dot / (Math.sqrt(aMagnitude) * Math.sqrt(bMagnitude)), 0.05, 0.99);
+  return clamp(
+    dot / (Math.sqrt(aMagnitude) * Math.sqrt(bMagnitude)),
+    0.05,
+    0.99,
+  );
 }
 
 function getQueryPointFromMatches(matches) {
@@ -1125,8 +1319,12 @@ function getQueryPointFromMatches(matches) {
     return { x: 52, y: 54 };
   }
   return {
-    x: weightedMatches.reduce((sum, item) => sum + item.x * item.similarity, 0) / total,
-    y: weightedMatches.reduce((sum, item) => sum + item.y * item.similarity, 0) / total,
+    x:
+      weightedMatches.reduce((sum, item) => sum + item.x * item.similarity, 0) /
+      total,
+    y:
+      weightedMatches.reduce((sum, item) => sum + item.y * item.similarity, 0) /
+      total,
   };
 }
 
@@ -1192,7 +1390,14 @@ function AttentionDemo({ focus }) {
       }, 0);
       return {
         ...prediction,
-        score: clamp(Math.round(prediction.base + (evidenceScore / prediction.evidence.length) * (focus / 100)), 6, 98),
+        score: clamp(
+          Math.round(
+            prediction.base +
+              (evidenceScore / prediction.evidence.length) * (focus / 100),
+          ),
+          6,
+          98,
+        ),
       };
     })
     .sort((a, b) => b.score - a.score);
@@ -1200,7 +1405,10 @@ function AttentionDemo({ focus }) {
 
   return (
     <div className="attention-demo">
-      <div className="segmented-control" aria-label="Attention context examples">
+      <div
+        className="segmented-control"
+        aria-label="Attention context examples"
+      >
         {Object.entries(attentionScenes).map(([id, item]) => (
           <button
             key={id}
@@ -1212,7 +1420,9 @@ function AttentionDemo({ focus }) {
           </button>
         ))}
       </div>
-      <p className="context-sentence">Predict the next useful word after reading the context:</p>
+      <p className="context-sentence">
+        Predict the next useful word after reading the context:
+      </p>
       <div className="attention-words">
         {scene.words.map((word) => {
           const intensity = clamp((word.weight * focus) / 100, 12, 100);
@@ -1231,8 +1441,8 @@ function AttentionDemo({ focus }) {
       <div className="model-reply compact">
         <Brain size={18} aria-hidden="true" />
         <p>
-          Next token leans toward: "{topPrediction.token}" because attention is strongest around{" "}
-          {topPrediction.evidence.join(" + ")}.
+          Next token leans toward: "{topPrediction.token}" because attention is
+          strongest around {topPrediction.evidence.join(" + ")}.
         </p>
       </div>
       <div className="candidate-list">
@@ -1303,7 +1513,9 @@ function PromptDemo({ temperature, setTemperature }) {
         <Thermometer size={18} aria-hidden="true" />
         <p>
           {base}
-          {constraints ? flourish : " Try adding format and audience constraints when quality matters."}
+          {constraints
+            ? flourish
+            : " Try adding format and audience constraints when quality matters."}
         </p>
       </div>
     </div>
@@ -1360,7 +1572,11 @@ function QuizCard({ module, quizAnswer, answerQuiz }) {
         {module.quiz.options.map((option, index) => {
           const selected = quizAnswer?.optionIndex === index;
           const correct = module.quiz.answer === index;
-          const className = selected ? (correct ? "correct selected" : "incorrect selected") : "";
+          const className = selected
+            ? correct
+              ? "correct selected"
+              : "incorrect selected"
+            : "";
           return (
             <button
               key={option}
@@ -1374,8 +1590,16 @@ function QuizCard({ module, quizAnswer, answerQuiz }) {
         })}
       </div>
       {quizAnswer && (
-        <strong className={quizAnswer.isCorrect ? "quiz-result correct" : "quiz-result incorrect"}>
-          {quizAnswer.isCorrect ? "Nice. That module is now complete." : "Almost. Try another answer."}
+        <strong
+          className={
+            quizAnswer.isCorrect
+              ? "quiz-result correct"
+              : "quiz-result incorrect"
+          }
+        >
+          {quizAnswer.isCorrect
+            ? "Nice. That module is now complete."
+            : "Almost. Try another answer."}
         </strong>
       )}
     </section>
@@ -1393,9 +1617,14 @@ function PlaygroundsView({ setActiveModuleId, setActiveView }) {
       />
       <div className="playground-grid">
         {modules.map((module) => (
-          <article className={`playground-card theme-${module.theme}`} key={module.id}>
+          <article
+            className={`playground-card theme-${module.theme}`}
+            key={module.id}
+          >
             <div className="playground-card-head">
-              <span className={`module-number ${module.theme}`}>{module.number}</span>
+              <span className={`module-number ${module.theme}`}>
+                {module.number}
+              </span>
               <div>
                 <h2>{module.shortTitle}</h2>
                 <p>{module.summary}</p>
@@ -1440,28 +1669,90 @@ function ConceptMapView({ setActiveModuleId, setActiveView }) {
   return (
     <section className="page-view">
       <SectionIntro
-        icon={Map}
+        icon={MapIcon}
         label="Mental model"
         title="LLM Concepts Map"
         text="A corrected flow from ML foundations to LLM internals and product workflows. Select any node to jump into the related lesson."
       />
       <div className="concept-map-shell">
-        <svg className="concept-map" viewBox="0 0 100 100" role="img" aria-label="LLM concept map">
-          <rect className="map-layer foundation" x="2" y="6" width="96" height="42" rx="3" />
-          <rect className="map-layer internals" x="2" y="51" width="66" height="44" rx="3" />
-          <rect className="map-layer workflow" x="70" y="45" width="28" height="50" rx="3" />
-          <text className="map-layer-label" x="5" y="12">ML foundation</text>
-          <text className="map-layer-label" x="5" y="57">LLM internals</text>
-          <text className="map-layer-label" x="73" y="51">App workflow</text>
-          {conceptLinks.map(([from, to, label]) => {
+        <svg
+          className="concept-map"
+          viewBox="0 0 100 100"
+          role="img"
+          aria-label="LLM concept map"
+        >
+          <rect
+            className="map-layer foundation"
+            x="2"
+            y="6"
+            width="96"
+            height="42"
+            rx="3"
+          />
+          <rect
+            className="map-layer internals"
+            x="2"
+            y="51"
+            width="66"
+            height="44"
+            rx="3"
+          />
+          <rect
+            className="map-layer workflow"
+            x="70"
+            y="45"
+            width="28"
+            height="50"
+            rx="3"
+          />
+          <text className="map-layer-label" x="5" y="12">
+            ML foundation
+          </text>
+          <text className="map-layer-label" x="5" y="57">
+            LLM internals
+          </text>
+          <text className="map-layer-label" x="73" y="51">
+            App workflow
+          </text>
+          {conceptLinks.map(([from, to, label], index) => {
             const a = nodeById.get(from);
             const b = nodeById.get(to);
             if (!a || !b) return null;
             const midX = (a.x + b.x) / 2;
             const midY = (a.y + b.y) / 2;
+
+            // Calculate perpendicular offset for label positioning
+            const dx = b.x - a.x;
+            const dy = b.y - a.y;
+            const len = Math.sqrt(dx * dx + dy * dy);
+            const perpX = -dy / len;
+            const perpY = dx / len;
+
+            // Count connections to target node to detect clustering
+            const connectionsToB = conceptLinks.filter(
+              ([f, t]) => t === to,
+            ).length;
+            const connectionsFromB = conceptLinks.filter(
+              ([f, t]) => f === to,
+            ).length;
+            const totalConnectionsToB = connectionsToB + connectionsFromB;
+
+            // Increase offset for heavily connected nodes and workflow area nodes
+            let offsetDistance = 4;
+            if (totalConnectionsToB >= 3) offsetDistance = 5.5;
+            if (b.x > 70) offsetDistance += 2; // Extra offset for right-side (workflow) nodes
+
+            // Alternate direction based on index
+            offsetDistance = index % 2 === 0 ? -offsetDistance : offsetDistance;
+            const labelX = midX + perpX * offsetDistance;
+            const labelY = midY + perpY * offsetDistance;
+
             const isActive = activeNodeId === from || activeNodeId === to;
             return (
-              <g key={`${from}-${to}`} className={isActive ? "map-link active" : "map-link"}>
+              <g
+                key={`${from}-${to}`}
+                className={isActive ? "map-link active" : "map-link"}
+              >
                 <line
                   className={isActive ? "active" : ""}
                   x1={a.x}
@@ -1469,7 +1760,7 @@ function ConceptMapView({ setActiveModuleId, setActiveView }) {
                   x2={b.x}
                   y2={b.y}
                 />
-                <text className="map-link-label" x={midX} y={midY - 1}>
+                <text className="map-link-label" x={labelX} y={labelY}>
                   {label}
                 </text>
               </g>
@@ -1478,7 +1769,9 @@ function ConceptMapView({ setActiveModuleId, setActiveView }) {
           {conceptNodes.map((node) => (
             <g
               key={node.id}
-              className={activeNodeId === node.id ? "map-node active" : "map-node"}
+              className={
+                activeNodeId === node.id ? "map-node active" : "map-node"
+              }
               role="button"
               tabIndex="0"
               onClick={() => activateNode(node)}
@@ -1489,8 +1782,8 @@ function ConceptMapView({ setActiveModuleId, setActiveView }) {
                 }
               }}
             >
-              <circle cx={node.x} cy={node.y} r="4.8" />
-              <text x={node.x} y={node.y - 7}>
+              <circle cx={node.x} cy={node.y} r="3.2" />
+              <text x={node.x} y={node.y - 5.5}>
                 {node.label}
               </text>
             </g>
@@ -1501,7 +1794,10 @@ function ConceptMapView({ setActiveModuleId, setActiveView }) {
             <span>{activeNode.layer}</span>
             <h2>{activeNode.label}</h2>
             <p>{activeNode.description}</p>
-            <button type="button" onClick={() => openModule(activeNode.moduleId)}>
+            <button
+              type="button"
+              onClick={() => openModule(activeNode.moduleId)}
+            >
               Open related lesson
             </button>
           </article>
